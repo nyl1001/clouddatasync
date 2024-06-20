@@ -84,14 +84,3 @@ func checkConfig(cfg *Config) error {
 	// check log config
 	return nil
 }
-
-var (
-	//go:embed config.toml
-	testConfigStr string
-)
-
-func LoadTestConfig() (*Config, error) {
-	var err error
-	cfg, err = loadConfigFromBytes([]byte(testConfigStr))
-	return cfg, err
-}
