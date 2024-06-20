@@ -1,4 +1,4 @@
-package pkg
+package clouds
 
 import (
 	"context"
@@ -9,9 +9,9 @@ import (
 	"path"
 	"testing"
 
-	"github.com/nyl1001/clouddatasync/pkg/ali"
-	"github.com/nyl1001/clouddatasync/pkg/config"
-	"github.com/nyl1001/clouddatasync/pkg/util"
+	"github.com/nyl1001/clouddatasync/clouds/ali"
+	"github.com/nyl1001/clouddatasync/clouds/config"
+	"github.com/nyl1001/clouddatasync/utils"
 )
 
 func TestAliSync(t *testing.T) {
@@ -68,7 +68,7 @@ func TestAliSyncByEnv(t *testing.T) {
 
 		dstDir := path.Join(userFsMountPoint, dstPath)
 
-		err = util.CopyDir(tempDir, dstDir)
+		err = utils.CopyDir(tempDir, dstDir)
 		if err != nil {
 			log.Fatalf("CopyDir failed: %v", err)
 		}
@@ -78,7 +78,7 @@ func TestAliSyncByEnv(t *testing.T) {
 		dataPath := os.Getenv("SRC_DATA_PATH")                 // 数据在万界公共文件系统根目录中的相对路径
 		srcDir := path.Join(publicMountPoint, dataPath)
 		dstDir := path.Join(userFsMountPoint, dstPath)
-		err := util.CopyDir(srcDir, dstDir)
+		err := utils.CopyDir(srcDir, dstDir)
 		if err != nil {
 			log.Fatalf("CopyDir failed: %v", err)
 		}
@@ -90,7 +90,7 @@ func TestAliSyncByEnv(t *testing.T) {
 }
 
 func TestAliSyncByConfigFile(t *testing.T) {
-	defConfigFilePath := "/Users/nieyinliang/work/go/src/nyl1001/clouddatasync/pkg/config/config.toml"
+	defConfigFilePath := "/Users/nieyinliang/work/go/src/nyl1001/clouddatasync/clouds/config/config.toml"
 	cfg, err := config.Init(defConfigFilePath)
 	if err != nil {
 		log.Fatalf("Init Config failed: %v", err)
@@ -126,7 +126,7 @@ func TestAliSyncByConfigFile(t *testing.T) {
 
 		dstDir := path.Join(cloudCfg.ALIOSSConfig.UserFSMountPoint, cloudCfg.ALIOSSConfig.DstPath)
 
-		err = util.CopyDir(tempDir, dstDir)
+		err = utils.CopyDir(tempDir, dstDir)
 		if err != nil {
 			log.Fatalf("CopyDir failed: %v", err)
 		}
@@ -136,7 +136,7 @@ func TestAliSyncByConfigFile(t *testing.T) {
 		dataPath := cloudCfg.WanJiePublicFS.SrcDataPath                // 数据在万界公共文件系统根目录中的相对路径
 		srcDir := path.Join(publicMountPoint, dataPath)
 		dstDir := path.Join(cloudCfg.WanJiePublicFS.UserFSMountPoint, cloudCfg.WanJiePublicFS.DstPath)
-		err = util.CopyDir(srcDir, dstDir)
+		err = utils.CopyDir(srcDir, dstDir)
 		if err != nil {
 			log.Fatalf("CopyDir failed: %v", err)
 		}

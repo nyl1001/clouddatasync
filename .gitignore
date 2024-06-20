@@ -23,5 +23,5 @@ go.work.sum
 
 .idea
 vendor
-pkg/config/config.toml
+clouds/config/config.toml
 go.sum
