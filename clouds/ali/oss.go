@@ -10,22 +10,22 @@ import (
 )
 
 type Client struct {
-	endpoint  string
-	accessKey string
-	objectKey string
-	client    *oss.Client
+	endpoint        string
+	accessKey       string
+	accessKeySecret string
+	client          *oss.Client
 }
 
-func NewClient(endpoint, accessKey, objectKey string) (*Client, error) {
-	innerCli, err := oss.New(endpoint, accessKey, objectKey)
+func NewClient(endpoint, accessKey, accessKeySecret string) (*Client, error) {
+	innerCli, err := oss.New(endpoint, accessKey, accessKeySecret)
 	if err != nil {
 		return nil, err
 	}
 	cli := &Client{
-		endpoint:  endpoint,
-		accessKey: accessKey,
-		objectKey: objectKey,
-		client:    innerCli,
+		endpoint:        endpoint,
+		accessKey:       accessKey,
+		accessKeySecret: accessKeySecret,
+		client:          innerCli,
 	}
 	return cli, nil
 }
