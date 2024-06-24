@@ -125,7 +125,17 @@ func TestAliSyncByConfigFile(t *testing.T) {
 		}
 
 		dstDir := path.Join(cloudCfg.ALIOSSConfig.UserFSMountPoint, cloudCfg.ALIOSSConfig.DstPath)
-
+		// 判断目录是否存在
+		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
+			// 目录不存在，创建目录
+			fmt.Printf("目录 %s 不存在，正在创建...\n", dstDir)
+			err := os.MkdirAll(dstDir, os.ModePerm)
+			if err != nil {
+				fmt.Printf("创建目录 %s 时出错: %v\n", dstDir, err)
+			} else {
+				fmt.Printf("目录 %s 创建成功\n", dstDir)
+			}
+		}
 		err = utils.CopyDir(tempDir, dstDir)
 		if err != nil {
 			log.Fatalf("CopyDir failed: %v", err)
