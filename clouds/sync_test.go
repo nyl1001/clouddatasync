@@ -11,6 +11,7 @@ import (
 
 	"github.com/nyl1001/clouddatasync/clouds/ali"
 	"github.com/nyl1001/clouddatasync/clouds/config"
+	"github.com/nyl1001/clouddatasync/clouds/wanjies3"
 	"github.com/nyl1001/clouddatasync/utils"
 )
 
@@ -89,7 +90,7 @@ func TestAliSyncByEnv(t *testing.T) {
 	log.Println("Data synced successfully.")
 }
 
-func TestAliSyncByConfigFile(t *testing.T) {
+func TestSyncByConfigFile(t *testing.T) {
 	defConfigFilePath := "/Users/nieyinliang/work/go/src/nyl1001/clouddatasync/clouds/config/config.toml"
 	cfg, err := config.Init(defConfigFilePath)
 	if err != nil {
@@ -150,6 +151,48 @@ func TestAliSyncByConfigFile(t *testing.T) {
 		if err != nil {
 			log.Fatalf("CopyDir failed: %v", err)
 		}
+	case "wanjie-s3":
+		wanjieS3EndpointAddr := cloudCfg.WanJieS3.EndpointAddr // 万界s3 endpoint，如: https://oss-cn-beijing.aliyuncs.com
+		wanjieS3Region := cloudCfg.WanJieS3.Region             // 万界s3 endpoint，如: https://oss-cn-beijing.aliyuncs.com
+		wanjieAk := cloudCfg.WanJieS3.AccessKey                // 万界s3 账户的access key
+		wanjieSk := cloudCfg.WanJieS3.SecretKey                // 万界s3 账户的secret key
+		bucketName := cloudCfg.WanJieS3.Bucket                 // 万界s3 bucket
+		dataPath := cloudCfg.WanJieS3.SrcDataPath              // 万界s3 bucket中的数据相对路径
+		cli, err := wanjies3.NewClient(wanjieS3EndpointAddr, wanjieS3Region, wanjieAk, wanjieSk)
+		if err != nil {
+			log.Fatalf("NewClient failed: %v", err)
+		}
+
+		// 指定临时目录的前缀，例如"clouddatasync_"，os.MkdirTemp会自动添加随机后缀以保证唯一性
+		dirPrefix := "clouddatasync_"
+		// 创建临时目录
+		tempDir, err := os.MkdirTemp("", dirPrefix)
+		if err != nil {
+			log.Fatalf("创建临时目录失败: %v", err)
+		}
+		log.Println("tempDir", tempDir)
+		err = cli.ListAndDownloadDir(context.Background(), bucketName, dataPath, tempDir)
+		if err != nil {
+			log.Fatalf("ListAndDownloadDir failed: %v", err)
+		}
+
+		dstDir := path.Join(cloudCfg.ALIOSSConfig.UserFSMountPoint, cloudCfg.ALIOSSConfig.DstPath)
+		// 判断目录是否存在
+		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
+			// 目录不存在，创建目录
+			fmt.Printf("目录 %s 不存在，正在创建...\n", dstDir)
+			err := os.MkdirAll(dstDir, os.ModePerm)
+			if err != nil {
+				fmt.Printf("创建目录 %s 时出错: %v\n", dstDir, err)
+			} else {
+				fmt.Printf("目录 %s 创建成功\n", dstDir)
+			}
+		}
+		err = utils.CopyDir(tempDir, dstDir)
+		if err != nil {
+			log.Fatalf("CopyDir failed: %v", err)
+		}
+
 	default:
 
 	}
