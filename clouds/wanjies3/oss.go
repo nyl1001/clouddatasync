@@ -27,14 +27,16 @@ func NewClient(endpoint, region, accessKey, accessKeySecret string) (*Client, er
 	if region == "" {
 		region = "us-east-1"
 	}
-	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String(region),
-		Endpoint:    aws.String(endpoint), // Ceph RGW 端点
-		Credentials: credentials.NewStaticCredentials(accessKey, accessKeySecret, ""),
-	})
-	if err != nil {
-		return nil, err
+	conf := aws.Config{
+		Region:                         aws.String(region),
+		Endpoint:                       aws.String(endpoint),
+		S3ForcePathStyle:               aws.Bool(true),
+		DisableRestProtocolURICleaning: aws.Bool(true),
+		DisableSSL:                     aws.Bool(true), // 禁用 HTTPS
+		Credentials:                    credentials.NewStaticCredentials(accessKey, accessKeySecret, ""),
+		//HTTPClient:                     httpClient,
 	}
+	sess := session.Must(session.NewSessionWithOptions(session.Options{Config: conf}))
 	svc := s3.New(sess)
 	cli := &Client{
 		endpoint:        endpoint,
