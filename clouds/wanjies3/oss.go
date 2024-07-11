@@ -48,9 +48,11 @@ func NewClient(endpoint, region, accessKey, accessKeySecret string) (*Client, er
 	return cli, nil
 }
 
-func (cli *Client) Download(_ context.Context, bucketName, objectKey, localDir string) error {
-	// 创建本地文件路径
-	localFilePath := filepath.Join(localDir, objectKey)
+func (cli *Client) Download(_ context.Context, bucketName, objectKey, localDir, prefix string) error {
+	// 去除前缀来创建本地文件路径
+	relativePath := strings.TrimPrefix(objectKey, prefix)
+	localFilePath := filepath.Join(localDir, relativePath)
+
 	err := os.MkdirAll(filepath.Dir(localFilePath), os.ModePerm)
 	if err != nil {
 		return fmt.Errorf("failed to create directory %s: %v", filepath.Dir(localFilePath), err)
@@ -80,7 +82,6 @@ func (cli *Client) Download(_ context.Context, bucketName, objectKey, localDir s
 	}
 
 	return nil
-
 }
 
 func (cli *Client) ListAndDownloadDir(ctx context.Context, bucketName, prefix, localBasePath string) error {
@@ -89,7 +90,7 @@ func (cli *Client) ListAndDownloadDir(ctx context.Context, bucketName, prefix, l
 		return cli.DownloadDirectory(ctx, bucketName, prefix, localBasePath)
 	} else {
 		// 否则，表示下载单个文件
-		return cli.Download(ctx, bucketName, prefix, localBasePath)
+		return cli.Download(ctx, bucketName, prefix, localBasePath, prefix)
 	}
 }
 
@@ -99,7 +100,7 @@ func (cli *Client) DownloadDirectory(ctx context.Context, bucket, prefix, localD
 		Prefix: aws.String(prefix),
 	}, func(page *s3.ListObjectsV2Output, lastPage bool) bool {
 		for _, object := range page.Contents {
-			err := cli.Download(ctx, bucket, *object.Key, localDir)
+			err := cli.Download(ctx, bucket, *object.Key, localDir, prefix)
 			if err != nil {
 				log.Printf("Failed to download file %s: %v", *object.Key, err)
 				return false
