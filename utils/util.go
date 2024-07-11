@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -37,7 +38,7 @@ func CopyDir(srcDir, destDir string) error {
 			if err != nil {
 				return err
 			}
-			err = CopyFile(srcPath, destPath)
+			err = CopyDir(srcPath, destPath)
 			if err != nil {
 				return err
 			}
@@ -51,4 +52,21 @@ func CopyDir(srcDir, destDir string) error {
 	}
 
 	return nil
+}
+
+func CopyFileV2(srcFile, destFile string) error {
+	source, err := os.Open(srcFile)
+	if err != nil {
+		return err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(destFile)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	_, err = io.Copy(destination, source)
+	return err
 }
