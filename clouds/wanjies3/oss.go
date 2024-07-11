@@ -24,6 +24,9 @@ type Client struct {
 }
 
 func NewClient(endpoint, region, accessKey, accessKeySecret string) (*Client, error) {
+	if region == "" {
+		region = "us-east-1"
+	}
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String(region),
 		Endpoint:    aws.String(endpoint), // Ceph RGW 端点
