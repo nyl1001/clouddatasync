@@ -176,7 +176,7 @@ func TestSyncByConfigFile(t *testing.T) {
 			log.Fatalf("ListAndDownloadDir failed: %v", err)
 		}
 
-		dstDir := path.Join(cloudCfg.ALIOSSConfig.UserFSMountPoint, cloudCfg.ALIOSSConfig.DstPath)
+		dstDir := path.Join(cloudCfg.WanJieS3.UserFSMountPoint, cloudCfg.WanJieS3.DstPath)
 		// 判断目录是否存在
 		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
 			// 目录不存在，创建目录
