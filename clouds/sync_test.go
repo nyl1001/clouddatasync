@@ -105,7 +105,7 @@ func TestSyncByConfigFile(t *testing.T) {
 		aliAk := cloudCfg.ALIOSSConfig.AccessKey              // 阿里云oss账户的access key
 		aliSk := cloudCfg.ALIOSSConfig.SecretKey              // 阿里云oss账户的secret key
 		bucketName := cloudCfg.ALIOSSConfig.Bucket            // 阿里云oss bucket
-		dataPath := cloudCfg.ALIOSSConfig.SrcDataPath         // 阿里云oss bucket中的数据相对路径
+		dataPath := cloudCfg.SrcDataPath                      // 阿里云oss bucket中的数据相对路径
 
 		cli, err := ali.NewClient(aliEndpointAddr, aliAk, aliSk) // 或者 tencent.Download
 		if err != nil {
@@ -125,7 +125,7 @@ func TestSyncByConfigFile(t *testing.T) {
 			log.Fatalf("ListAndDownloadDir failed: %v", err)
 		}
 
-		dstDir := path.Join(cloudCfg.ALIOSSConfig.UserFSMountPoint, cloudCfg.ALIOSSConfig.DstPath)
+		dstDir := path.Join(cloudCfg.UserFSMountPoint, cloudCfg.DstPath)
 		// 判断目录是否存在
 		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
 			// 目录不存在，创建目录
@@ -144,9 +144,9 @@ func TestSyncByConfigFile(t *testing.T) {
 
 	case "wanjie-public-fs":
 		publicMountPoint := cloudCfg.WanJiePublicFS.PublicFSMountPoint // 万界公共文件系统挂载点根目录
-		dataPath := cloudCfg.WanJiePublicFS.SrcDataPath                // 数据在万界公共文件系统根目录中的相对路径
+		dataPath := cloudCfg.SrcDataPath                               // 数据在万界公共文件系统根目录中的相对路径
 		srcDir := path.Join(publicMountPoint, dataPath)
-		dstDir := path.Join(cloudCfg.WanJiePublicFS.UserFSMountPoint, cloudCfg.WanJiePublicFS.DstPath)
+		dstDir := path.Join(cloudCfg.UserFSMountPoint, cloudCfg.DstPath)
 		err = utils.CopyDir(srcDir, dstDir)
 		if err != nil {
 			log.Fatalf("CopyDir failed: %v", err)
@@ -157,7 +157,7 @@ func TestSyncByConfigFile(t *testing.T) {
 		wanjieAk := cloudCfg.WanJieS3.AccessKey                // 万界s3 账户的access key
 		wanjieSk := cloudCfg.WanJieS3.SecretKey                // 万界s3 账户的secret key
 		bucketName := cloudCfg.WanJieS3.Bucket                 // 万界s3 bucket
-		dataPath := cloudCfg.WanJieS3.SrcDataPath              // 万界s3 bucket中的数据相对路径
+		dataPath := cloudCfg.SrcDataPath                       // 万界s3 bucket中的数据相对路径
 		cli, err := wanjies3.NewClient(wanjieS3EndpointAddr, wanjieS3Region, wanjieAk, wanjieSk)
 		if err != nil {
 			log.Fatalf("NewClient failed: %v", err)
@@ -176,7 +176,7 @@ func TestSyncByConfigFile(t *testing.T) {
 			log.Fatalf("ListAndDownloadDir failed: %v", err)
 		}
 
-		dstDir := path.Join(cloudCfg.WanJieS3.UserFSMountPoint, cloudCfg.WanJieS3.DstPath)
+		dstDir := path.Join(cloudCfg.UserFSMountPoint, cloudCfg.DstPath)
 		// 判断目录是否存在
 		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
 			// 目录不存在，创建目录

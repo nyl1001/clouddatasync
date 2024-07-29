@@ -20,45 +20,42 @@ type Config struct {
 
 // CloudsConfig 代表云端配置
 type CloudsConfig struct {
-	Platform       string               `toml:"platform"`
-	ALIOSSConfig   ALIOSSConfig         `toml:"ali-oss"`
-	WanJiePublicFS WanJiePublicFSConfig `toml:"wanjie-public-fs"`
-	WanJieS3       WanJieS3Config       `toml:"wanjie-s3"`
+	Platform          string               `toml:"platform"`
+	UserS3FsEndpoint  string               `toml:"user_s3fs_endpoint"`
+	UserS3FsBucket    string               `toml:"user_s3fs_bucket"`
+	UserS3FsAccessKey string               `toml:"user_s3fs_access_key"`
+	UserS3FsSecretKey string               `toml:"user_s3fs_secret_key"`
+	UserFsMountPoint  string               `toml:"user_fs_mount_point"`
+	UserFsSrcAddr     string               `toml:"user_fs_src_addr"`
+	UserFSMountPoint  string               `toml:"user_fs_mount_point"`
+	DstPath           string               `toml:"dst_path"`
+	SrcDataPath       string               `toml:"src_data_path"`
+	ALIOSSConfig      ALIOSSConfig         `toml:"ali-oss"`
+	WanJiePublicFS    WanJiePublicFSConfig `toml:"wanjie-public-fs"`
+	WanJieS3          WanJieS3Config       `toml:"wanjie-s3"`
 }
 
 // ALIOSSConfig 代表阿里云OSS配置
 type ALIOSSConfig struct {
-	UserFsSrcAddr    string `toml:"user_fs_src_addr"`
-	UserFSMountPoint string `toml:"user_fs_mount_point"`
-	DstPath          string `toml:"dst_path"`
-	EndpointAddr     string `toml:"endpoint_addr"`
-	AccessKey        string `toml:"access_key"`
-	SecretKey        string `toml:"secret_key"`
-	Bucket           string `toml:"bucket"`
-	SrcDataPath      string `toml:"src_data_path"`
+	EndpointAddr string `toml:"endpoint_addr"`
+	AccessKey    string `toml:"access_key"`
+	SecretKey    string `toml:"secret_key"`
+	Bucket       string `toml:"bucket"`
 }
 
 // WanJiePublicFSConfig 代表万界公共文件系统配置
 type WanJiePublicFSConfig struct {
-	UserFsSrcAddr      string `toml:"user_fs_src_addr"`
-	UserFSMountPoint   string `toml:"user_fs_mount_point"`
-	DstPath            string `toml:"dst_path"`
 	PublicFSSrcAddr    string `toml:"public_fs_src_addr"`
 	PublicFSMountPoint string `toml:"public_fs_mount_point"`
-	SrcDataPath        string `toml:"src_data_path"`
 }
 
 // WanJieS3Config 代表万界s3配置
 type WanJieS3Config struct {
-	UserFsSrcAddr    string `toml:"user_fs_src_addr"`
-	UserFSMountPoint string `toml:"user_fs_mount_point"`
-	DstPath          string `toml:"dst_path"`
-	EndpointAddr     string `toml:"endpoint_addr"`
-	Region           string `toml:"region"`
-	AccessKey        string `toml:"access_key"`
-	SecretKey        string `toml:"secret_key"`
-	Bucket           string `toml:"bucket"`
-	SrcDataPath      string `toml:"src_data_path"`
+	EndpointAddr string `toml:"endpoint_addr"`
+	Region       string `toml:"region"`
+	AccessKey    string `toml:"access_key"`
+	SecretKey    string `toml:"secret_key"`
+	Bucket       string `toml:"bucket"`
 }
 
 func (c *CloudsConfig) String() string {
